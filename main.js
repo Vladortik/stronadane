@@ -1,20 +1,46 @@
-let files = []; // Tablica do przechowywania przesłanych plików
+// Zmienna do przechowywania plików
+let files = []; 
 let selectedFiles = new Set(); // Zestaw do przechowywania zaznaczonych plików (przechowujemy indeksy)
+
+// Konfiguracja Firebase
+const firebaseConfig = {
+    apiKey: "AIzaSyDs3rhvEoXsP740sRyAh2aI8fj-OXhnWe0",
+    authDomain: "plikiprojekt-2a5fc.firebaseapp.com",
+    databaseURL: "https://plikiprojekt-2a5fc-default-rtdb.firebaseio.com",
+    projectId: "plikiprojekt-2a5fc",
+    storageBucket: "plikiprojekt-2a5fc.appspot.com",
+    messagingSenderId: "599280046815",
+    appId: "1:599280046815:web:b621520264e21b77720f6a"
+};
+
+// Inicjalizacja Firebase
+firebase.initializeApp(firebaseConfig);
+
+// Referencje do Firebase Storage i Realtime Database
+const storage = firebase.storage();
+const database = firebase.database();
+
 const correctUsername = "vlmo";
 const correctPassword = "12345";
 
-// Funkcja do załadowania plików z LocalStorage
-function loadFilesFromLocalStorage() {
-    const storedFiles = JSON.parse(localStorage.getItem('uploadedFiles'));
-    if (storedFiles) {
-        files = storedFiles;
-        displayFiles(); // Wyświetlamy pliki na liście
-    }
+// Funkcja do załadowania plików z Realtime Database
+function loadFiles() {
+    const filesRef = database.ref('files');
+    filesRef.once('value').then((snapshot) => {
+        files = [];
+        snapshot.forEach((childSnapshot) => {
+            const file = childSnapshot.val();
+            files.push({ id: childSnapshot.key, ...file });
+        });
+        displayFiles();
+    });
 }
 
-// Funkcja do zapisywania plików w LocalStorage
-function saveFilesToLocalStorage() {
-    localStorage.setItem('uploadedFiles', JSON.stringify(files));
+// Funkcja do zapisywania plików w Realtime Database
+function saveFileToDatabase(file) {
+    const filesRef = database.ref('files');
+    const newFileRef = filesRef.push();
+    return newFileRef.set(file);
 }
 
 // Funkcja do przesyłania pliku
@@ -28,16 +54,22 @@ function uploadFile() {
 
         reader.onload = function(event) {
             const fileExtension = file.name.split('.').pop(); // Pobieramy rozszerzenie pliku
-            files.push({
+            const fileData = {
                 name: file.name,
                 size: file.size,
                 type: file.type,
                 date: now.toLocaleDateString(), // Formatujemy datę
                 extension: fileExtension,
                 content: event.target.result // Zakodowany plik w Base64
+            };
+
+            // Zapisujemy plik do Firebase Realtime Database
+            saveFileToDatabase(fileData).then(() => {
+                console.log('Plik został zapisany w bazie danych.');
+                loadFiles(); // Ładujemy pliki
+            }).catch((error) => {
+                console.error('Błąd zapisywania pliku w bazie danych:', error);
             });
-            saveFilesToLocalStorage(); // Zapisujemy zaktualizowaną listę do LocalStorage
-            displayFiles(); // Wyświetlanie listy plików
         };
 
         reader.readAsDataURL(file); // Odczytujemy plik jako zakodowany Base64
@@ -87,47 +119,70 @@ function downloadSelectedFiles() {
 
 // Funkcja do usuwania zaznaczonych plików
 function deleteSelectedFiles() {
-    files = files.filter((file, index) => {
-        return !selectedFiles.has(index); // Zatrzymujemy tylko te pliki, które NIE są zaznaczone
+    selectedFiles.forEach((index) => {
+        let file = files[index];
+        deleteFile(file.id, file.name);
     });
 
     selectedFiles.clear(); // Czyścimy zaznaczone pliki
-    saveFilesToLocalStorage(); // Aktualizujemy LocalStorage po usunięciu
-    displayFiles(); // Odświeżamy listę plików
+    loadFiles(); // Odświeżamy listę plików
 }
 
-// Funkcja do logowania
-function login(username, password) {
+// Funkcja do usuwania pliku z Firebase Storage i Realtime Database
+function deleteFile(fileId, fileName) {
+    if (confirm(`Czy na pewno chcesz usunąć plik ${fileName}?`)) {
+        const storageRef = storage.ref('files/' + fileName);
+        
+        // Próba usunięcia pliku z Firebase Storage
+        storageRef.delete().then(function() {
+            // Plik usunięty z Firebase Storage, teraz usuwamy wpis z bazy danych
+            database.ref('files/' + fileId).remove().then(() => {
+                console.log(`Plik ${fileName} został usunięty z Firebase Storage i Realtime Database.`);
+                loadFiles(); // Odśwież listę po usunięciu
+            }).catch(function(error) {
+                console.error('Błąd podczas usuwania wpisu z bazy danych:', error);
+            });
+        }).catch(function(error) {
+            console.error('Błąd usuwania pliku z Firebase Storage:', error);
+
+            // Jeśli plik nie istnieje w Firebase Storage (błąd 404), usuwamy go z bazy danych
+            if (error.code === 'storage/object-not-found') {
+                alert(`Plik ${fileName} nie istnieje w Firebase Storage. Usuwanie wpisu z bazy danych.`);
+                
+                // Usuwamy plik z Firebase Realtime Database
+                database.ref('files/' + fileId).remove().then(() => {
+                    console.log(`Wpis pliku ${fileName} został usunięty z bazy danych.`);
+                    loadFiles(); // Odśwież listę po usunięciu
+                }).catch(function(error) {
+                    console.error('Błąd podczas usuwania wpisu z bazy danych:', error);
+                });
+            }
+        });
+    }
+}
+
+// Funkcja logowania
+function login() {
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+    
     if (username === correctUsername && password === correctPassword) {
-        // Pokaż główną stronę i ukryj ekran logowania
-        document.getElementById("login-container").style.display = "none";
-        document.getElementById("main-container").style.display = "block";
-        loadFilesFromLocalStorage(); // Załaduj pliki po zalogowaniu
+        document.getElementById('login-container').style.display = 'none';
+        document.getElementById('main-container').style.display = 'block';
+        loadFiles(); // Ładujemy pliki po zalogowaniu
     } else {
-        document.getElementById("errorMessage").style.display = "block";
+        document.getElementById('errorMessage').style.display = 'block';
     }
 }
 
-// Obsługa formularza logowania
-document.getElementById("loginForm").addEventListener("submit", function(event) {
-    event.preventDefault(); // Zapobiegamy domyślnemu zachowaniu formularza
-    const username = document.getElementById("username").value;
-    const password = document.getElementById("password").value;
-    login(username, password); // Próbujemy się zalogować
-});
-
-// Funkcja do wylogowania
+// Funkcja wylogowywania
 function logout() {
-    document.getElementById("main-container").style.display = "none";
-    document.getElementById("login-container").style.display = "block";
-    selectedFiles.clear(); // Czyścimy zaznaczone pliki
+    document.getElementById('login-container').style.display = 'block';
+    document.getElementById('main-container').style.display = 'none';
 }
 
-// Ładowanie strony - sprawdzamy, czy użytkownik jest już zalogowany
-window.onload = function() {
-    if (sessionStorage.getItem('isLoggedIn')) {
-        document.getElementById("login-container").style.display = "none";
-        document.getElementById("main-container").style.display = "block";
-        loadFilesFromLocalStorage();
-    }
-};
+// Nasłuchujemy na formularz logowania
+document.getElementById('loginForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    login();
+});

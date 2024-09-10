@@ -1,12 +1,18 @@
 <!DOCTYPE html>
 <html lang="pl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Logowanie i Zarządzanie plikami</title>
-    <link rel="stylesheet" href="style.css">
-</head>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Logowanie i Zarządzanie plikami</title>
+        <link rel="stylesheet" href="style.css">
+    
+        <!-- Firebase CDN -->
+        <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    </head>
 <body>
+    <!-- Sekcja logowania -->
     <div id="login-container" class="login-container">
         <h2>Logowanie</h2>
         <form id="loginForm">
@@ -19,25 +25,9 @@
         <p id="errorMessage" style="color: red; display: none;">Niepoprawny login lub hasło!</p>
     </div>
 
+    <!-- Główna sekcja zarządzania plikami (ukryta na początku) -->
     <div id="main-container" class="main-container" style="display: none;">
-        <!-- Powitanie -->
         <h1>Witaj, VLMO</h1>
-        
-        <!-- Tabela do wyświetlania plików -->
-        <div class="table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Nazwa dokumentu</th>
-                        <th>Data dodania</th>
-                        <th>Rozszerzenie</th>
-                    </tr>
-                </thead>
-                <tbody id="fileListTable">
-                    <!-- Zawartość wypełniana dynamicznie -->
-                </tbody>
-            </table>
-        </div>
 
         <!-- Formularz do przesyłania plików -->
         <div class="file-upload">
@@ -45,11 +35,28 @@
             <button onclick="uploadFile()">Wstaw dane</button>
         </div>
 
+        <h2>Lista plików</h2>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nazwa dokumentu</th>
+                        <th>Data dodania</th>
+                        <th>Rozszerzenie</th>
+                        <th>Akcje</th>
+                    </tr>
+                </thead>
+                <tbody id="fileListTable">
+                    <!-- Lista plików wypełniana dynamicznie -->
+                </tbody>
+            </table>
+        </div>
+
         <!-- Przyciski akcji -->
         <div class="action-buttons">
             <button onclick="downloadSelectedFiles()">Pobierz zaznaczone dane</button>
             <button onclick="deleteSelectedFiles()">Usuń zaznaczone pliki</button>
-            <button onclick="logout()">Wyloguj</button> <!-- Przycisk Wyloguj -->
+            <button onclick="logout()">Wyloguj</button>
         </div>
     </div>
 
