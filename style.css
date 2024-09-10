@@ -1,79 +1,143 @@
-/* Wyśrodkowanie i powiększenie okna logowania */
+/* Ustawienia globalne */
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #0d0d0d;
     height: 100vh;
     display: flex;
     justify-content: center;
-    align-items: flex-start;
+    align-items: center;
     margin: 0;
+    flex-direction: column;
+    color: white;
 }
 
-.login-container {
-    background-color: white;
+/* Neonowe efekty dla kontenera logowania */
+.login-container, .main-container {
+    background-color: rgba(0, 0, 0, 0.6);
     padding: 40px;
-    width: 400px;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.6);
     border-radius: 12px;
     text-align: center;
+    position: relative;
+    border: 2px solid rgba(255, 255, 255, 0.1);
     margin-bottom: 20px;
 }
 
-h2 {
-    margin-bottom: 20px;
-    font-size: 24px;
+.login-container::before, .main-container::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    border-radius: 12px;
+    background: linear-gradient(45deg, #ff00ff, #00ffff, #00ff00);
+    z-index: -1;
+    filter: blur(15px);
 }
 
-input {
+h2, h1 {
+    font-size: 28px;
+    color: #00ffff;
+    text-shadow: 0 0 10px #00ffff;
+}
+
+/* Styl inputów */
+input[type="text"], input[type="password"], input[type="file"] {
     width: 80%;
-    padding: 15px;
+    padding: 12px;
     margin: 10px 0;
-    border: 1px solid #ccc;
+    border: none;
     border-radius: 8px;
     font-size: 16px;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    box-shadow: 0 0 5px #00ffff, 0 0 10px #00ffff;
+    outline: none;
+    transition: box-shadow 0.3s ease;
 }
 
+input[type="text"]:focus, input[type="password"]:focus, input[type="file"]:focus {
+    box-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff;
+}
+
+/* Stylizacja przycisków */
 button {
-    padding: 8px 16px;
-    background-color: #4CAF50;
+    padding: 12px 24px;
+    background-color: transparent;
     color: white;
-    border: 2px solid black;
+    border: 2px solid #00ffff;
     border-radius: 8px;
     cursor: pointer;
     font-size: 16px;
-    width: auto;
-    margin: 5px 0;
-    box-shadow: 2px 2px 5px #aaa;
+    margin: 10px;
+    transition: background-color 0.3s, box-shadow 0.3s;
+    box-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff;
 }
 
 button:hover {
-    background-color: #45a049;
+    background-color: rgba(0, 255, 255, 0.2);
+    box-shadow: 0 0 20px #00ffff, 0 0 30px #00ffff;
 }
 
-/* Tabela do wyświetlania plików */
+/* Tabela plików */
 .table-container {
     width: 100%;
-    max-height: 200px;
-    overflow-y: scroll;
-    border: 2px solid black;
-    margin-bottom: 20px;
+    max-height: 300px;
+    overflow-y: auto;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    margin-top: 20px;
 }
 
 table {
     width: 100%;
     border-collapse: collapse;
+    color: white;
 }
 
 th, td {
     padding: 10px;
     text-align: left;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid #555;
 }
 
 th {
-    background-color: #f0f0f0;
+    background-color: rgba(255, 255, 255, 0.1);
+    text-shadow: 0 0 5px #00ffff;
 }
 
-.selected {
-    background-color: #cce5ff !important; /* Kolor zaznaczonego wiersza */
+tr:nth-child(even) {
+    background-color: rgba(255, 255, 255, 0.05);
 }
+
+tr.selected {
+    background-color: rgba(0, 255, 255, 0.2);
+}
+
+/* Stylizacja komunikatu o błędzie */
+#errorMessage {
+    color: #ff4d4d;
+    text-shadow: 0 0 10px #ff4d4d;
+    display: none;
+}
+
+/* Responsywność */
+@media (max-width: 500px) {
+    .login-container, .main-container {
+        width: 90%;
+        padding: 20px;
+    }
+
+    button {
+        font-size: 14px;
+        padding: 8px 16px;
+    }
+
+    input[type="text"], input[type="password"], input[type="file"] {
+        font-size: 14px;
+        padding: 10px;
+    }
+}
+
