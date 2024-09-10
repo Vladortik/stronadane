@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logowanie i Zarządzanie plikami</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="login-container" class="login-container">
+        <h2>Logowanie</h2>
+        <form id="loginForm">
+            <label for="username">Login:</label>
+            <input type="text" id="username" placeholder="Wpisz login"><br><br>
+            <label for="password">Hasło:</label>
+            <input type="password" id="password" placeholder="Wpisz hasło"><br><br>
+            <button type="submit">Zaloguj się</button>
+        </form>
+        <p id="errorMessage" style="color: red; display: none;">Niepoprawny login lub hasło!</p>
+    </div>
+
+    <div id="main-container" class="main-container" style="display: none;">
+        <!-- Powitanie -->
+        <h1>Witaj, VLMO</h1>
+        
+        <!-- Tabela do wyświetlania plików -->
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nazwa dokumentu</th>
+                        <th>Data dodania</th>
+                        <th>Rozszerzenie</th>
+                    </tr>
+                </thead>
+                <tbody id="fileListTable">
+                    <!-- Zawartość wypełniana dynamicznie -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Formularz do przesyłania plików -->
+        <div class="file-upload">
+            <input type="file" id="fileInput">
+            <button onclick="uploadFile()">Wstaw dane</button>
+        </div>
+
+        <!-- Przyciski akcji -->
+        <div class="action-buttons">
+            <button onclick="downloadSelectedFiles()">Pobierz zaznaczone dane</button>
+            <button onclick="deleteSelectedFiles()">Usuń zaznaczone pliki</button>
+            <button onclick="logout()">Wyloguj</button> <!-- Przycisk Wyloguj -->
+        </div>
+    </div>
+
+    <script src="main.js"></script>
+</body>
+</html>
