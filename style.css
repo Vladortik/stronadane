@@ -1,7 +1,8 @@
-/* Ustawienia globalne */
+/* Neonowy efekt tła */
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #0d0d0d;
+    font-family: 'Poppins', sans-serif;
+    background-color: #111;
+    background: radial-gradient(circle, rgba(20, 20, 20, 1), rgba(0, 0, 0, 1));
     height: 100vh;
     display: flex;
     justify-content: center;
@@ -9,85 +10,75 @@ body {
     margin: 0;
     flex-direction: column;
     color: white;
+    overflow: hidden;
 }
 
-/* Neonowe efekty dla kontenera logowania */
-.login-container, .main-container {
-    background-color: rgba(0, 0, 0, 0.6);
-    padding: 40px;
-    width: 100%;
-    max-width: 400px;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.6);
-    border-radius: 12px;
-    text-align: center;
-    position: relative;
-    border: 2px solid rgba(255, 255, 255, 0.1);
-    margin-bottom: 20px;
+/* Glowing text for headers */
+.glowing-text {
+    color: #0ff;
+    text-shadow: 0 0 4px #0ff, 0 0 8px #0ff, 0 0 12px #00f, 0 0 16px #0ff;
+    font-size: 20px;
 }
 
-.login-container::before, .main-container::before {
-    content: '';
-    position: absolute;
-    top: -2px;
-    left: -2px;
-    right: -2px;
-    bottom: -2px;
-    border-radius: 12px;
-    background: linear-gradient(45deg, #ff00ff, #00ffff, #00ff00);
-    z-index: -1;
-    filter: blur(15px);
+/* Glowing border and animated effects for buttons */
+.neon-button {
+    padding: 12px 24px;
+    background-color: transparent;
+    color: #00ff00;
+    border: 2px solid #00ff00;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    margin: 10px;
+    box-shadow: 0 0 5px #00ff00, 0 0 10px #00ff00;
+    transition: background-color 0.4s, box-shadow 0.4s, transform 0.4s;
 }
 
-h2, h1 {
-    font-size: 28px;
-    color: #00ffff;
-    text-shadow: 0 0 10px #00ffff;
+.neon-button:hover {
+    background-color: rgba(0, 255, 0, 0.15);
+    box-shadow: 0 0 15px #00ff00, 0 0 30px #00ff00;
+    transform: translateY(-3px);
 }
 
-/* Styl inputów */
+/* Neonowy efekt pól tekstowych */
 input[type="text"], input[type="password"], input[type="file"] {
     width: 80%;
-    padding: 12px;
+    padding: 15px;
     margin: 10px 0;
     border: none;
     border-radius: 8px;
     font-size: 16px;
     background-color: rgba(255, 255, 255, 0.1);
     color: #ffffff;
-    box-shadow: 0 0 5px #00ffff, 0 0 10px #00ffff;
+    box-shadow: 0 0 3px #00ffff, 0 0 6px #00ffff;
     outline: none;
     transition: box-shadow 0.3s ease;
 }
 
 input[type="text"]:focus, input[type="password"]:focus, input[type="file"]:focus {
-    box-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff;
+    box-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00;
 }
 
-/* Stylizacja przycisków */
-button {
-    padding: 12px 24px;
-    background-color: transparent;
-    color: white;
-    border: 2px solid #00ffff;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 16px;
-    margin: 10px;
-    transition: background-color 0.3s, box-shadow 0.3s;
-    box-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff;
+/* Tło glow i animacje formularza logowania */
+.login-container, .main-container {
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 40px;
+    width: 100%;
+    max-width: 600px; /* Zwiększenie rozmiaru kontenera */
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.2), 0 0 20px rgba(0, 255, 255, 0.1);
+    border-radius: 15px;
+    text-align: center;
+    position: relative;
+    border: 2px solid rgba(255, 255, 255, 0.05);
 }
 
-button:hover {
-    background-color: rgba(0, 255, 255, 0.2);
-    box-shadow: 0 0 20px #00ffff, 0 0 30px #00ffff;
-}
-
-/* Tabela plików */
+/* Tabela z przewijaniem */
 .table-container {
     width: 100%;
-    max-height: 300px;
+    max-height: 350px; /* Zwiększona tabela */
     overflow-y: auto;
-    border: 2px solid rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
     margin-top: 20px;
 }
 
@@ -98,29 +89,29 @@ table {
 }
 
 th, td {
-    padding: 10px;
+    padding: 15px; /* Zwiększenie odstępów */
     text-align: left;
     border-bottom: 1px solid #555;
 }
 
 th {
-    background-color: rgba(255, 255, 255, 0.1);
-    text-shadow: 0 0 5px #00ffff;
+    background-color: rgba(255, 255, 255, 0.05);
+    text-shadow: 0 0 3px #00ffff;
 }
 
 tr:nth-child(even) {
     background-color: rgba(255, 255, 255, 0.05);
 }
 
-tr.selected {
-    background-color: rgba(0, 255, 255, 0.2);
+tr:hover {
+    background-color: rgba(0, 255, 255, 0.1);
 }
 
-/* Stylizacja komunikatu o błędzie */
-#errorMessage {
-    color: #ff4d4d;
-    text-shadow: 0 0 10px #ff4d4d;
-    display: none;
+/* Zaznaczanie plików */
+tr.selected {
+    background-color: rgba(0, 255, 0, 0.2); /* Zielone podświetlenie zaznaczonego pliku */
+    box-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00;
+    transition: background-color 0.3s, box-shadow 0.3s;
 }
 
 /* Responsywność */
@@ -139,5 +130,8 @@ tr.selected {
         font-size: 14px;
         padding: 10px;
     }
-}
 
+    .table-container {
+        max-height: 250px;
+    }
+}
